@@ -1,0 +1,22 @@
+<div>
+    Tere tulemast
+</div>
+
+<div>
+    {% if user.is_authenticated %}
+        
+        <li class="nav-item">
+            <a class="nav-link" href="/notes/logout">Logout</a>
+        </li>
+        <li class="nav-item">
+            Logged in as, {{user.username}}
+        </li>
+  
+    {% else %}
+  
+        <li class="nav-item">
+            <a class="nav-link" href="/notes/login">Login</a>
+        </li>
+  
+    {% endif %}
+</div>

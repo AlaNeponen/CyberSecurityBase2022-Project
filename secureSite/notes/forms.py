@@ -22,7 +22,7 @@ class CustomUserCreationForm(UserCreationForm):
         password2 = self.cleaned_data['password2']
 
         #if len(password1) < 8 or bool(re.match('^[0-9]+$', password1)) or password1.isalpha():
-        #    raise ValidationError("Password must be atleast 8 characters long and must consist of numbers and letters")
+        #    raise ValidationError("Password must be atleast 12 characters long and must consist of numbers and letters")
       
         if password1 and password2 and password1 != password2:  
             raise ValidationError("Passwords don't match.")  

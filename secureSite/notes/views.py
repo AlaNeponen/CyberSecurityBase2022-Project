@@ -25,12 +25,22 @@ def add(request):
     id = request.user.id
     query = f"INSERT INTO NOTES (content, owner) VALUES ('{content}', '{id}')"
     cursor.execute(query)
+
+# Fix:
+#    query = "INSERT INTO NOTES (content, owner) VALUES (%s, %s)"
+#    cursor.execute(query, (content, id))
     return redirect('/notes')
 
 @login_required
 def delete(request):
     n = Note.objects.get(pk=request.POST.get('id'))
     n.delete()
+
+# Fix:
+#    if n.owner.id == request.user.id:    
+#        n.delete()
+#    else: 
+#        messages.error(request, 'You can only delete your own notes!')
     return redirect('/notes')
 
 def register_request(request):

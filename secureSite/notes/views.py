@@ -1,14 +1,37 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from .models import Note
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm
+from django.db import connection
+from babel.dates import format_datetime
+from datetime import datetime
 
 def index(request):
-    return render(request=request, template_name='notes/notes.html')
+    notes = []
+    if request.user.is_authenticated:
+        notes = Note.objects.all()
+    return render(request=request, template_name='notes/notes.html', context={'notes': notes})
+
+@login_required
+def add(request):
+    content = request.POST.get('note')
+    d = datetime.now()
+    formatted_date = format_datetime(d, "yyyy.MMMM.dd GGG hh:mm a", locale='en')
+    content += f', posted by: {request.user.username}, timestamp: {formatted_date}'
+    cursor = connection.cursor()
+    id = request.user.id
+    query = f"INSERT INTO NOTES (content, owner) VALUES ('{content}', '{id}')"
+    cursor.execute(query)
+    return redirect('/notes')
+
+@login_required
+def delete(request):
+    n = Note.objects.get(pk=request.POST.get('id'))
+    n.delete()
+    return redirect('/notes')
 
 def register_request(request):
     if request.method == 'POST':

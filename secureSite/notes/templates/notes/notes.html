@@ -1,6 +1,14 @@
 <div>
-    Tere tulemast
+    <h1>Very Secure Notes Forum</h1>
 </div>
+
+{% if messages %}  
+<ul>   
+  {% for message in messages %}  
+      <li>{{ message }}</li>  
+  {% endfor %}  
+</ul>   
+{% endif %}  
 
 <div>
     {% if user.is_authenticated %}
@@ -11,7 +19,29 @@
         <li class="nav-item">
             Logged in as, {{user.username}}
         </li>
-  
+        
+        <ul>
+            {% for note in notes %}
+            <li>
+                {{note.content}}
+            </li>
+            <form action='delete/' method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{note.id}}" />
+                <input type="submit" value="Delete"/>
+            </form>
+    
+            {% endfor %}
+        <ul>
+    
+            <h2>Add note</h2>
+    
+            <form action='add/' method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="note" name="note" id="note"/>
+                <input type="submit" value="Add"/>
+            </form>
+
     {% else %}
   
         <li class="nav-item">
